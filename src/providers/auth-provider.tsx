@@ -18,8 +18,8 @@ function AuthGuard({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (error) {
             console.error('Auth0 error:', error.message);
-            // Clear any stale state and redirect to login
-            logout({ logoutParams: { returnTo: window.location.origin + '/login' } });
+            // Clear any stale state and redirect to origin
+            logout({ logoutParams: { returnTo: window.location.origin } });
         }
     }, [error, logout]);
 
