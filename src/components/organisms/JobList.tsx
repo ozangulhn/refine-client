@@ -6,9 +6,10 @@ interface JobListProps {
     loading?: boolean;
     emptyMessage?: string;
     onJobClick?: (job: Job) => void;
+    onDownload?: (job: Job) => void;
 }
 
-export function JobList({ jobs, loading, emptyMessage = 'No jobs found', onJobClick }: JobListProps) {
+export function JobList({ jobs, loading, emptyMessage = 'No jobs found', onJobClick, onDownload }: JobListProps) {
     if (loading) {
         return (
             <div style={{ textAlign: 'center', padding: 'var(--space-8)', color: 'var(--text-muted)' }}>
@@ -33,7 +34,7 @@ export function JobList({ jobs, loading, emptyMessage = 'No jobs found', onJobCl
     return (
         <div>
             {jobs.map((job) => (
-                <JobCard key={job.id} job={job} onClick={onJobClick} />
+                <JobCard key={job.id} job={job} onClick={onJobClick} onDownload={onDownload} />
             ))}
         </div>
     );

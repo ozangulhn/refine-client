@@ -101,6 +101,16 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDownloadJob = async (job: Job) => {
+    try {
+      const token = await getAccessTokenSilently();
+      await jobsApi.downloadJobResult(token, job.id, `${job.original_filename || 'document'}.epub`);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download file. Please try again.');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="loading-page">
@@ -143,6 +153,7 @@ export default function DashboardPage() {
           jobs={jobs}
           loading={jobsLoading}
           emptyMessage={emptyMessages[activeTab]}
+          onDownload={handleDownloadJob}
         />
       </main>
 

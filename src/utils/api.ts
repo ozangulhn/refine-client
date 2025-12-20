@@ -55,6 +55,7 @@ export interface Job {
     error_message: string | null;
     created_at: string;
     completed_at: string | null;
+    has_result?: boolean;
 }
 
 export interface JobsResponse {
@@ -91,6 +92,28 @@ export const jobsApi = {
             method: 'POST',
             token,
         }),
+
+    downloadJobResult: async (token: string, jobId: string, filename: string) => {
+        const response = await fetch(`${API_BASE_URL}/api/user/jobs/${jobId}/download`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new ApiError(response.status, 'Failed to download result');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    },
 };
 
 // Upload API - uses FormData, different from JSON requests

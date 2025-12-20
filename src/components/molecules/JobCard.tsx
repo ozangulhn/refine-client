@@ -1,5 +1,5 @@
-import { Badge } from '../atoms';
-import { FileText } from 'lucide-react';
+import { Badge, Button } from '../atoms';
+import { FileText, Download } from 'lucide-react';
 
 export interface Job {
     id: string;
@@ -11,11 +11,13 @@ export interface Job {
     created_at: string;
     completed_at: string | null;
     error_message: string | null;
+    has_result?: boolean;
 }
 
 interface JobCardProps {
     job: Job;
     onClick?: (job: Job) => void;
+    onDownload?: (job: Job) => void;
 }
 
 function formatDate(dateString: string): string {
@@ -28,7 +30,7 @@ function formatDate(dateString: string): string {
     });
 }
 
-export function JobCard({ job, onClick }: JobCardProps) {
+export function JobCard({ job, onClick, onDownload }: JobCardProps) {
     const showProgress = job.status === 'processing' || job.status === 'pending';
     const filename = job.original_filename || 'Untitled document';
 
@@ -65,7 +67,20 @@ export function JobCard({ job, onClick }: JobCardProps) {
                 </div>
             )}
 
-            <div className="job-status">
+            <div className="job-status" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+                {job.has_result && onDownload && (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDownload(job);
+                        }}
+                        title="Download EPUB"
+                    >
+                        <Download size={18} />
+                    </Button>
+                )}
                 <Badge status={job.status} />
             </div>
         </div>
